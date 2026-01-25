@@ -59,7 +59,6 @@
         <!-- AÇÕES -->
         <div class="d-flex gap-3">
           <button class="btn btn-like btn-outline-danger"
-                  data-tipo="video"
                   data-video-id="{{ video.id }}">
             ❤️ Curtir
             <span id="like-count-{{ video.id }}">
@@ -68,7 +67,6 @@
           </button>
 
           <button class="btn btn-outline-light btn-comment"
-                  data-tipo="video"
                   data-video-id="{{ video.id }}">
             💬 Comentários
             <span class="text-secondary">
@@ -81,7 +79,7 @@
       <!-- COMENTÁRIOS -->
       <div id="comentarios-video-{{ video.id }}"
            class="comentarios-box mt-3 p-3 rounded"
-           style="background:#1a1c23; border:1px solid #2d2f36;">
+           style="background:#1a1c23; border:1px solid #2d2f36; display:none;">
 
         <!-- LISTA -->
         <div class="comentario-list mb-3">
@@ -104,8 +102,7 @@
         <!-- FORM -->
         {% if current_user.is_authenticated %}
         <form class="comentario-form d-flex gap-2"
-              data-tipo="video"
-              data-id="{{ video.id }}">
+              data-video-id="{{ video.id }}">
           <input type="text"
                  name="texto"
                  class="form-control"
