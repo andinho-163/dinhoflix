@@ -183,7 +183,7 @@ def upload_video():
         if form.thumbnail.data:
             thumb = salvar_thumbnail(form.thumbnail.data)
         else:
-            thumb = gerar_thumbnail_automatica(nome_video)
+            thumb = 'default.jpg'
 
         video = Video(
             titulo=form.titulo.data,
