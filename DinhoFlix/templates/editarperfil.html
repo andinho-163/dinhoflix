@@ -1,0 +1,36 @@
+{% extends 'perfil.html' %}
+
+{% block form_editar_perfil %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="POST" action="" class="border p-4 shadow-lg" enctype="multipart/form-data" style="background-color: #1a1c23; color: white; border-radius: 15px; border: 1px solid #333;">
+                {{ form.csrf_token }}
+                <legend style="color: goldenrod; font-weight: bold;">Editar Informações do Perfil</legend>
+                <hr style="background-color: #555">
+
+                <fieldset>
+                    <div class="form-group mb-3">
+                        {{ form.username.label(class="form-control-label text-white") }}
+                        {{ form.username(class="form-control bg-dark text-white border-secondary") }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form.email.label(class="form-control-label text-white") }}
+                        {{ form.email(class="form-control bg-dark text-white border-secondary") }}
+                    </div>
+                    <div class="form-group mb-3">
+                        {{ form.foto_perfil.label(class="form-control-label text-white") }}
+                        {{ form.foto_perfil(class="form-control bg-dark text-white border-secondary") }}
+                        <small class="text-muted">Formatos aceitos: JPG, PNG, WEBP</small>
+                    </div>
+                </fieldset>
+
+                <div class="d-flex justify-content-between mt-4">
+                    {{ form.botao_submit_editarperfil(class="btn btn-warning w-75", style="font-weight: bold;") }}
+                    <a href="{{ url_for('perfil') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

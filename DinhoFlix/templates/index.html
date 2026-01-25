@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+    <div class="container">
+        <h1>Em breve os videos estarão disponíveis</h1>
+    </div>
+    <div class="container">
+            <video width="680" height="480" controls>
+                <source src="{{ url_for ('static', filename='VID_20241130_193019644.mp4') }}" type="video/mp4">
+                Seu navegador não suporta vídeos
+            </video>
+    </div>
+{% endblock %}

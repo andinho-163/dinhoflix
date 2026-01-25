@@ -1,0 +1,194 @@
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+
+/* Fundo principal do site */
+body {
+    background-color: #0f1014; /* Cinza escuro premium */
+    color: #c33b5f; /* Texto quase branco para não ofuscar */
+}
+
+/* Deixar a Navbar escura e moderna */
+.navbar {
+    background-color: #1a1c23 !important;
+    border-bottom: 1px solid #333;
+}
+.navbar-brand, .nav-link {
+    color: #c33b5f !important;
+}
+
+/* Estilo dos Cards de Vídeo na Home */
+.card-video {
+    background-color: #1a1c23;
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.3s; /* Efeito de zoom ao passar o mouse */
+    overflow: hidden;
+}
+
+.card-video:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Estilo para os botões de curso */
+.btn-success {
+    background-color: #00a884;
+    border: none;
+}
+
+.btn-dinho {
+    background: linear-gradient(135deg, #e50914, #ff2a2a);
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 25px;
+    padding: 8px 18px;
+    transition: all 0.2s ease;
+}
+
+.btn-dinho:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+}
+
+.btn-outline-dinho {
+    border: 1px solid #e50914;
+    color: #e50914;
+    border-radius: 25px;
+    background: transparent;
+}
+
+.btn-outline-dinho:hover {
+    background: #e50914;
+    color: white;
+}
+/* ================== BOTÃO DE CURTIR ================== */
+.btn-like {
+    border: none;
+    background: transparent;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-like:hover {
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 6px rgba(229, 9, 20, 0.8));
+}
+
+.btn-like.liked {
+    filter: drop-shadow(0 0 8px rgba(229, 9, 20, 1));
+}
+.comentarios-box {
+    background-color: #14151a;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.comentario-item {
+    padding: 6px 8px;
+    border-bottom: 1px solid #2d2f36;
+}
+
+.comentario-item:last-child {
+    border-bottom: none;
+}
+
+.btn-comment {
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+
+  .navbar .nav-link {
+    font-size: 0.95rem;
+  }
+
+  .perfil-img {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.mobile-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+}
+
+@media (max-width: 768px) {
+
+  .feed-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-like,
+  .btn-comment {
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+
+  .comentario-form input {
+    font-size: 0.95rem;
+  }
+}
+
+.comentarios-box {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .nav-profile-link {
+    background-color: #1a1c23;
+    border-radius: 20px;
+    padding: 4px 10px;
+  }
+}
+
+:root {
+  --dinho-red: #e50914;
+  --bg-dark: #0f1014;
+  --bg-card: #1a1c23;
+  --border-dark: #2d2f36;
+  --text-muted: #9ca3af;
+}
+
+.video-player {
+  background: black;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.video-info {
+  background: #1a1c23;
+  border-radius: 10px;
+  border: 1px solid #2d2f36;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border: 1px solid goldenrod;
+}
+
+.comentarios {
+  background: #1a1c23;
+  border-radius: 10px;
+  border: 1px solid #2d2f36;
+}
+
+.comentario-item {
+  border-bottom: 1px solid #2d2f36;
+  padding-bottom: 6px;
+}

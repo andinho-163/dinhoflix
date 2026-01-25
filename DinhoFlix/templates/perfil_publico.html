@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card p-4 shadow-lg" style="background-color: #1a1c23; color: white; border: 1px solid #333; width: 550px; border-radius: 15px;">
+            <div class="d-flex align-items-center">
+                <div class="image pe-4">
+                    <img src="{{ foto_perfil }}" class="rounded-circle border border-secondary" width="140" height="140" style="object-fit: cover;">
+                </div>
+
+                <div class="ml-3 w-100">
+                    <h4 class="mb-1 mt-0" style="color: goldenrod; font-weight: bold;">{{ usuario.username }}</h4>
+                    <span style="color: #bbb; display: block; mb-3">{{ usuario.email }}</span>
+
+                    <div class="p-3 mt-2 d-flex justify-content-between rounded text-white stats" style="background-color: #2c2f3a;">
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 11px; text-transform: uppercase; color: #f8f9fa;">Vídeos</span>
+                            <span style="font-size: 18px; font-weight: bold;">{{ usuario.videos|length }}</span>
+                        </div>
+
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 11px; text-transform: uppercase; color: #f8f9fa;">Posts</span>
+                            <span style="font-size: 18px; font-weight: bold;">{{ usuario.posts|length }}</span>
+                        </div>
+
+                        <div class="d-flex flex-column align-items-center">
+                            <span style="font-size: 11px; text-transform: uppercase; color: #f8f9fa;">Relatos</span>
+                            <span style="font-size: 18px; font-weight: bold;">{{ usuario.depoimentos|length }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h3 class="text-white mb-4" style="border-left: 5px solid goldenrod; padding-left: 15px;">Conteúdos de {{ usuario.username }}</h3>
+        <div class="row">
+            {% if usuario.videos %}
+                {% for video in usuario.videos %}
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-dark text-white border-secondary h-100">
+                        <img src="{{ url_for('static', filename='videos/' + video.thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                        <div class="card-body p-2 text-center">
+                            <small class="d-block text-truncate">{{ video.titulo }}</small>
+                            <a href="{{ url_for('exibir_video', video=video.id) }}" class="btn btn-sm btn-outline-warning mt-2 py-0" style="font-size: 0.7rem;">Assistir</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted text-center w-100">Este usuário ainda não publicou nenhum vídeo.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" style="background-color: #1a1c23; color: white; border-radius: 15px; border: 1px solid #333;">
+                <div class="card-header border-0 bg-transparent mt-3">
+                    <h2 class="text-center" style="color: goldenrod; font-weight: bold;">Publicar Novo Vídeo</h2>
+                </div>
+
+                <div class="card-body p-4">
+                    <form id="uploadForm" method="POST" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+
+                        <div class="form-group mb-3">
+                            {{ form.titulo.label(class="form-control-label") }}
+                            {{ form.titulo(class="form-control bg-dark text-white border-secondary") }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form.descricao.label(class="form-control-label") }}
+                            {{ form.descricao(class="form-control bg-dark text-white border-secondary", rows="3") }}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form.arquivo.label(class="form-control-label") }}
+                            {{ form.arquivo(class="form-control bg-dark text-white border-secondary") }}
+                            <small class="text-warning">Apenas arquivos .mp4 ou .mov</small>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form.thumbnail.label(class="form-control-label") }}
+                            {{ form.thumbnail(class="form-control bg-dark text-white border-secondary") }}
+                            <small class="text">Opcional: Se deixar vazio, geraremos uma capa do vídeo automaticamente.</small>
+                        </div>
+
+                        <div id="btnContainer">
+                            {{ form.botao_submit(class="btn btn-warning w-100 fw-bold", id="submitBtn") }}
+                        </div>
+
+                        <div id="uploadProgress" class="mt-4 d-none">
+                            <p class="text-center mb-2" id="statusText">Enviando e processando vídeo... Aguarde.</p>
+                            <div class="progress" style="height: 25px; background-color: #333;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                                     role="progressbar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('uploadForm').onsubmit = function() {
+        // Esconde o botão para evitar cliques duplos
+        document.getElementById('btnContainer').classList.add('d-none');
+        // Mostra a barra de progresso
+        document.getElementById('uploadProgress').classList.remove('d-none');
+    };
+</script>
+{% endblock %}

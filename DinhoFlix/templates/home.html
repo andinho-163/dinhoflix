@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+
+    <!-- FEED -->
+    <div class="col-lg-7 col-md-10">
+
+      <h2 class="text-center mb-4" style="color:darkgoldenrod">
+        Fique por dentro do melhor conteúdo
+      </h2>
+
+      <!-- HERO -->
+      <div class="mb-4 p-4 rounded"
+           style="background: linear-gradient(135deg, #1a1c23, #0f1014); border:1px solid #2d2f36;">
+        <h2 class="fw-bold mb-1">
+          <span style="color:#e50914;">DINHO</span><span class="text-white">FLIX</span>
+        </h2>
+        <p class="text-info mb-0">
+          Descubra vídeos, posts e relatos da comunidade
+        </p>
+      </div>
+
+      {% if not videos and not posts and not depoimentos %}
+        <div class="text-center text-muted mt-5">
+          <h4>Nenhum conteúdo ainda 😢</h4>
+          <p>Seja o primeiro a publicar algo!</p>
+        </div>
+      {% endif %}
+
+      <!-- ===================== VÍDEOS ===================== -->
+      {% for video in videos %}
+      <div class="mb-5 feed-card"
+           style="background-color:#1a1c23; border-radius:12px; border:1px solid #2d2f36;">
+
+        <span class="badge bg-danger mb-2">🎬 Vídeo</span>
+
+        <div class="p-3 d-flex align-items-center">
+          <img src="{{ url_for('static', filename='fotos_perfil/' + video.autor.foto_perfil) }}"
+               class="rounded-circle me-2"
+               width="40" height="40"
+               style="object-fit:cover;">
+          <div>
+            <span class="text-white fw-bold">{{ video.autor.username }}</span><br>
+            <small class="text-muted">Publicou um vídeo</small>
+          </div>
+        </div>
+
+        <a href="{{ url_for('exibir_video', video_id=video.id) }}">
+          <img src="{{ url_for('static', filename='thumbnails/' + video.thumbnail) }}"
+               class="w-100"
+               style="max-height:450px; object-fit:cover;">
+        </a>
+
+        <div class="p-3">
+          <h5 class="text-white">{{ video.titulo }}</h5>
+          <p class="text-secondary small">{{ video.descricao[:150] }}...</p>
+
+          <!-- AÇÕES -->
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-like btn-outline-danger"
+                    data-tipo="video"
+                    data-id="{{ video.id }}">❤️</button>
+
+            <span id="like-count-video-{{ video.id }}"
+                  class="fw-bold text-danger">
+              {{ video.likes|length }}
+            </span>
+
+            <button class="btn btn-sm btn-outline-secondary btn-comment"
+                    data-tipo="video"
+                    data-id="{{ video.id }}">💬</button>
+
+            <span class="text-secondary fw-bold">
+              {{ video.comentarios|length }}
+            </span>
+          </div>
+
+          <!-- COMENTÁRIOS -->
+          <div class="comentarios-box mt-3" id="comentarios-video-{{ video.id }}">
+            {% for comentario in video.comentarios %}
+              <div class="comentario-item mb-2" data-comentario-id="{{ comentario.id }}">
+                <strong>{{ comentario.autor.username }}</strong>
+                <div class="small">{{ comentario.texto }}</div>
+
+                {% if comentario.autor == current_user %}
+                  <button class="btn btn-sm btn-outline-danger btn-apagar-comentario"
+                          data-comentario-id="{{ comentario.id }}">
+                    Apagar
+                  </button>
+                {% endif %}
+              </div>
+            {% endfor %}
+
+            {% if current_user.is_authenticated %}
+              <form class="comentario-form mt-2"
+                    data-tipo="video"
+                    data-id="{{ video.id }}">
+                <div class="d-flex gap-2">
+                  <input name="texto" class="form-control form-control-sm" required>
+                  <button class="btn btn-danger btn-sm">➤</button>
+                </div>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- ===================== POSTS ===================== -->
+      {% for post in posts %}
+      <div class="mb-4 p-4 feed-card"
+           style="background-color:#1a1c23; border-left:4px solid #00f2ff;">
+
+        <span class="badge bg-info text-dark mb-2">📝 Post</span>
+
+        <div class="d-flex align-items-center mb-3">
+          <img src="{{ url_for('static', filename='fotos_perfil/' + post.autor.foto_perfil) }}"
+               class="rounded-circle me-2"
+               width="40" height="40">
+          <span class="text-white fw-bold">{{ post.autor.username }}</span>
+        </div>
+
+        <h4 style="color:goldenrod;">{{ post.titulo }}</h4>
+        <p class="text-light opacity-75">{{ post.corpo }}</p>
+
+        <div class="d-flex align-items-center gap-3 mt-3">
+          <button class="btn btn-sm btn-like btn-outline-danger"
+                  data-tipo="post"
+                  data-id="{{ post.id }}">❤️</button>
+
+          <span id="like-count-post-{{ post.id }}"
+                class="fw-bold text-danger">
+            {{ post.likes|length }}
+          </span>
+
+          <button class="btn btn-sm btn-outline-secondary btn-comment"
+                  data-tipo="post"
+                  data-id="{{ post.id }}">💬</button>
+
+          <span class="text-secondary fw-bold">
+            {{ post.comentarios|length }}
+          </span>
+        </div>
+
+        <div class="comentarios-box mt-3" id="comentarios-post-{{ post.id }}">
+          {% for comentario in post.comentarios %}
+            <div class="comentario-item mb-2" data-comentario-id="{{ comentario.id }}">
+              <strong>{{ comentario.autor.username }}</strong>
+              <div class="small">{{ comentario.texto }}</div>
+            </div>
+          {% endfor %}
+
+          {% if current_user.is_authenticated %}
+            <form class="comentario-form mt-2"
+                  data-tipo="post"
+                  data-id="{{ post.id }}">
+              <input name="texto" class="form-control form-control-sm" required>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- ===================== DEPOIMENTOS ===================== -->
+      {% for depoimento in depoimentos %}
+      <div class="mb-4 p-4 feed-card"
+           style="background-color:#1a1c23; border-left:4px solid #00f2ff;">
+
+        <span class="badge bg-info text-dark mb-2">💬 Depoimento</span>
+
+        <p class="text-white fst-italic fs-5">
+          "{{ depoimento.corpo }}"
+        </p>
+
+        <small class="text-info d-block text-end">
+          — @{{ depoimento.autor.username }}
+        </small>
+
+        <div class="d-flex align-items-center gap-3 mt-3">
+          <button class="btn btn-sm btn-like btn-outline-danger"
+                  data-tipo="depoimento"
+                  data-id="{{ depoimento.id }}">❤️</button>
+
+          <span id="like-count-depoimento-{{ depoimento.id }}"
+                class="fw-bold text-danger">
+            {{ depoimento.likes|length }}
+          </span>
+
+          <button class="btn btn-sm btn-outline-secondary btn-comment"
+                  data-tipo="depoimento"
+                  data-id="{{ depoimento.id }}">💬</button>
+
+          <span class="text-secondary fw-bold">
+            {{ depoimento.comentarios|length }}
+          </span>
+        </div>
+
+        <div class="comentarios-box mt-3" id="comentarios-depoimento-{{ depoimento.id }}">
+          {% for comentario in depoimento.comentarios %}
+            <div class="comentario-item mb-2" data-comentario-id="{{ comentario.id }}">
+              <strong>{{ comentario.autor.username }}</strong>
+              <div class="small">{{ comentario.texto }}</div>
+            </div>
+          {% endfor %}
+
+          {% if current_user.is_authenticated %}
+            <form class="comentario-form mt-2"
+                  data-tipo="depoimento"
+                  data-id="{{ depoimento.id }}">
+              <input name="texto" class="form-control form-control-sm" required>
+            </form>
+          {% endif %}
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

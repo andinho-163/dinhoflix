@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+
+    <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
+      <span style="color:#e50914;">DINHO</span><span class="text-white">FLIX</span>
+    </a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+
+                  <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('explorar', tipo='videos') }}">
+                Vídeos
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('explorar', tipo='posts') }}">
+                Posts
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('explorar', tipo='relatos') }}">
+                Relatos
+              </a>
+            </li>
+
+
+        {% if current_user.is_authenticated %}
+
+        <!-- CRIAR -->
+        <li class="nav-item dropdown">
+          <a class="btn btn-outline-warning btn-sm dropdown-toggle"
+             data-bs-toggle="dropdown">Criar</a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
+            <li><a class="dropdown-item" href="{{ url_for('upload_video') }}">🎬 Vídeo</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('criar_post') }}">📝 Post</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('criar_depoimento') }}">💬 Relato</a></li>
+          </ul>
+        </li>
+
+        <!-- PERFIL -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center"
+             data-bs-toggle="dropdown">
+            <img src="{{ url_for('static', filename='fotos_perfil/' + current_user.foto_perfil) }}"
+                 class="rounded-circle me-2"
+                 width="30" height="30"
+                 style="object-fit:cover;border:1px solid goldenrod;">
+            {{ current_user.username }}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary">
+            <li><a class="dropdown-item text-white" href="{{ url_for('perfil') }}">👤 Meu Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('sair') }}">🚪 Sair</a></li>
+          </ul>
+        </li>
+
+        {% else %}
+          <li><a class="btn btn-outline-light btn-sm" href="{{ url_for('login') }}">Login</a></li>
+          <li><a class="btn btn-warning btn-sm" href="{{ url_for('login') }}">Criar Conta</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

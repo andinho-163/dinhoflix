@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-4 shadow-lg text-center"
+         style="background-color: #1a1c23; color: white; max-width: 600px; border-radius: 15px; border: 1px solid #333;">
+
+        <!-- Título -->
+        <h2 class="mb-3" style="color: goldenrod; font-weight: bold;">Contato</h2>
+
+        <!-- Subtítulo -->
+        <p class="mb-4 text " style="color: #bbbbbb">Fale diretamente com o administrador da página</p>
+
+        <!-- Nome do desenvolvedor -->
+        <p class="fs-5 mb-3">👨‍💻 <strong>Anderson Luiz</strong></p>
+
+        <!-- Email -->
+        <p class="mb-2">
+            📧 <strong>Email:</strong>
+            <a href="mailto:anddamere@gmail.com" class="text-warning text-decoration-none">
+                anddamere@gmail.com
+            </a>
+        </p>
+
+        <!-- WhatsApp -->
+        <p class="mb-4">
+            📱 <strong>WhatsApp:</strong> +55 21 96917-7931
+        </p>
+
+        <!-- Botão WhatsApp -->
+        <a href="https://wa.me/5521969177931?text=Olá%20Anderson,%20vim%20pelo%20DinhoFlix"
+           target="_blank"
+           class="btn btn-success btn-lg w-100 fw-bold">
+            💬 Falar no WhatsApp
+        </a>
+    </div>
+</div>
+{% endblock %}

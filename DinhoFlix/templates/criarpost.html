@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+
+            <div class="card bg-dark text-white p-4 shadow"
+                 style="border-radius: 15px; border: 1px solid #2d2f36;">
+
+                <h2 class="text-center mb-3" style="color: goldenrod; font-weight: bold;">
+                    Criar Novo Post
+                </h2>
+
+                <p class="text-center text-muted mb-4">
+                    Compartilhe um conteúdo com a comunidade DinhoFlix
+                </p>
+
+                <form method="POST">
+                    {{ form.csrf_token }}
+
+                    <div class="mb-3">
+                        {{ form.titulo.label(class="form-label") }}
+
+                        {% if form.titulo.errors %}
+                            {{ form.titulo(class="form-control is-invalid bg-dark text-white border-secondary") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.titulo.errors %}
+                                    {{ erro }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.titulo(class="form-control bg-dark text-white border-secondary") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.corpo.label(class="form-label") }}
+
+                        {% if form.corpo.errors %}
+                            {{ form.corpo(class="form-control is-invalid bg-dark text-white border-secondary", rows="6") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.corpo.errors %}
+                                    {{ erro }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.corpo(class="form-control bg-dark text-white border-secondary", rows="6") }}
+                        {% endif %}
+
+                        <small class="text-muted">
+                            Seja claro e objetivo no conteúdo
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {{ form.botao_submit(class="btn btn-primary fw-bold") }}
+
+                        <a href="{{ url_for('home') }}"
+                           class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

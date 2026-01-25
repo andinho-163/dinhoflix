@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+
+      <!-- TOPO -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-white mb-0">{{ video.titulo }}</h2>
+        <a href="{{ url_for('home') }}" class="btn btn-sm btn-outline-secondary">
+          ← Voltar
+        </a>
+      </div>
+
+      <!-- PLAYER -->
+      <div class="ratio ratio-16x9 video-player">
+        <video controls controlsList="nodownload" oncontextmenu="return false">
+          <source src="{{ url_for('static', filename='videos/' + video.arquivo_video) }}" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- INFORMAÇÕES -->
+      <div class="video-info mt-4 p-4">
+
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h5 class="text-warning">Descrição</h5>
+            <p class="text-muted">{{ video.descricao }}</p>
+          </div>
+
+          {% if current_user == video.autor %}
+          <form action="{{ url_for('excluir_video', video_id=video.id) }}" method="POST">
+            <button class="btn btn-outline-danger btn-sm">
+              Excluir Vídeo
+            </button>
+          </form>
+          {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- AUTOR -->
+        <div class="d-flex align-items-center mb-3">
+          <img src="{{ url_for('static', filename='fotos_perfil/' + video.autor.foto_perfil) }}"
+               class="rounded-circle me-2 avatar">
+          <span class="text-muted">
+            Publicado por <strong class="text-warning">{{ video.autor.username }}</strong>
+          </span>
+        </div>
+
+        <!-- AÇÕES -->
+        <div class="d-flex gap-3">
+          <button class="btn btn-like
+                  {% if curtir_video(video) %}
+                    btn-danger
+                  {% else %}
+                    btn-outline-danger
+                  {% endif %}"
+                  data-video-id="{{ video.id }}">
+            ❤️ Curtir
+            <span id="like-count-{{ video.id }}">
+              {{ video.likes|length }}
+            </span>
+          </button>
+
+          <button class="btn btn-outline-light btn-comment"
+                  data-video-id="{{ video.id }}">
+            💬 Comentários
+            <span class="text-secondary">
+              {{ video.comentarios|length }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- COMENTÁRIOS (INICIA FECHADO) -->
+      <div id="comentarios-video-{{ video.id }}"
+           class="comentarios d-none mt-3 p-3">
+
+        <!-- LISTA -->
+        <div class="comentario-list mb-3">
+          {% for comentario in video.comentarios %}
+          <div class="comentario-item mb-2"
+               data-comentario-id="{{ comentario.id }}">
+            <strong>{{ comentario.usuario.username }}</strong>
+            <div class="text small">{{ comentario.texto }}</div>
+
+            {% if comentario.usuario == current_user %}
+            <button class="btn btn-sm btn-outline-danger btn-apagar-comentario mt-1">
+              Apagar
+            </button>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- FORM -->
+        {% if current_user.is_authenticated %}
+        <form class="comentario-form d-flex gap-2"
+              data-video-id="{{ video.id }}">
+          <input type="text"
+                 name="texto"
+                 class="form-control"
+                 placeholder="Escreva um comentário..."
+                 required>
+          <button type="submit" class="btn btn-warning">
+            Enviar
+          </button>
+        </form>
+        {% else %}
+        <small class="text-muted">
+          Faça login para comentar
+        </small>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

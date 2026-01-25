@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-white mb-5" style="border-left: 5px solid goldenrod; padding-left: 15px;">Comunidade DinhoFlix</h1>
+
+        <div class="row">
+        {% for usuario in lista_usuarios %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card p-3 shadow-lg h-100" style="background-color: #1a1c23; color: white; border: 1px solid #333; border-radius: 15px;">
+                    <div class="text-center mb-3">
+                        <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(usuario.foto_perfil)) }}"
+                             class="rounded-circle border border-secondary" width="100" height="100" style="object-fit: cover;">
+
+                        <h4 class="mt-3 mb-0" style="color: goldenrod;">{{ usuario.username }}</h4>
+                        <span style="color: #f8f9fa; opacity: 0.7; font-size: 0.85rem;">{{ usuario.email }}</span>
+                    </div>
+
+                    <div class="p-2 d-flex justify-content-around rounded mb-3" style="background-color: #2c2f3a;">
+                        <div class="text-center">
+                            <span class="d-block" style="font-size: 10px; text-transform: uppercase; color: #f8f9fa;">Vídeos</span>
+                            <span style="font-weight: bold; color: white;">{{ usuario.videos|length }}</span>
+                        </div>
+
+                        <div class="text-center border-start border-end border-secondary px-3">
+                            <span class="d-block" style="font-size: 10px; text-transform: uppercase; color: #f8f9fa;">Posts</span>
+                            <span style="font-weight: bold; color: white;">{{ usuario.posts|length }}</span>
+                        </div>
+
+                        <div class="text-center">
+                            <span class="d-block" style="font-size: 10px; text-transform: uppercase; color: #f8f9fa;">Relatos</span>
+                            <span style="font-weight: bold; color: white;">{{ usuario.depoimentos|length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a href="{{ url_for('exibir_perfil_usuario', usuario_id=usuario.id) }}" class="btn btn-outline-warning btn-sm w-100" style="font-weight: bold;">
+                            Ver Perfil Completo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="row mt-5"></div>
+{% endblock %}
