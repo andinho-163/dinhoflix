@@ -374,8 +374,11 @@ def apagar_comentario(comentario_id):
 # ==========================================
 
 def salvar_imagem(imagem):
+    pasta = os.path.join(app.root_path, 'static/fotos_perfil')
+    os.makedirs(pasta, exist_ok=True)
+
     nome = secrets.token_hex(8) + os.path.splitext(imagem.filename)[1]
-    caminho = os.path.join(app.root_path, 'static/fotos_perfil', nome)
+    caminho = os.path.join(pasta, nome)
 
     img = Image.open(imagem)
     img.thumbnail((400, 400))
@@ -384,17 +387,26 @@ def salvar_imagem(imagem):
     return nome
 
 
+
 def salvar_video(arquivo):
+    pasta = os.path.join(app.root_path, 'static/videos')
+    os.makedirs(pasta, exist_ok=True)
+
     nome = secrets.token_hex(8) + os.path.splitext(arquivo.filename)[1]
-    arquivo.save(os.path.join(app.root_path, 'static/videos', nome))
+    arquivo.save(os.path.join(pasta, nome))
     return nome
+
 
 
 def salvar_thumbnail(imagem):
+    pasta = os.path.join(app.root_path, 'static/thumbnails')
+    os.makedirs(pasta, exist_ok=True)
+
     nome = secrets.token_hex(8) + os.path.splitext(imagem.filename)[1]
-    caminho = os.path.join(app.root_path, 'static/thumbnails', nome)
+    caminho = os.path.join(pasta, nome)
     Image.open(imagem).save(caminho)
     return nome
+
 
 
 def gerar_thumbnail_automatica(nome_video):

@@ -22,6 +22,7 @@ os.makedirs(app.instance_path, exist_ok=True)
 # CONFIGURAÇÕES
 # ===============================
 app.config['SECRET_KEY'] = '29cecf8afd6176f06bb3f55472d490d1'
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB
 
 # Banco de dados (sempre dentro de /instance)
 if os.getenv("DATABASE_URL"):
