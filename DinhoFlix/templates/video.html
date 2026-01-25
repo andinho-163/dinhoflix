@@ -59,6 +59,7 @@
         <!-- AÇÕES -->
         <div class="d-flex gap-3">
           <button class="btn btn-like btn-outline-danger"
+                  data-tipo="video"
                   data-video-id="{{ video.id }}">
             ❤️ Curtir
             <span id="like-count-{{ video.id }}">
@@ -67,6 +68,7 @@
           </button>
 
           <button class="btn btn-outline-light btn-comment"
+                  data-tipo="video"
                   data-video-id="{{ video.id }}">
             💬 Comentários
             <span class="text-secondary">
