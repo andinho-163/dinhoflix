@@ -14,23 +14,27 @@
       </div>
 
       <!-- PLAYER -->
-      <div class="ratio ratio-16x9 video-player">
-        <video controls controlsList="nodownload" oncontextmenu="return false">
-          <source src="{{ url_for('static', filename='videos/' + video.arquivo_video) }}" type="video/mp4">
+      <div class="ratio ratio-16x9 mb-4">
+        <video controls preload="metadata" class="w-100 rounded">
+          <source src="{{ url_for('media_video', filename=video.arquivo_video) }}" type="video/mp4">
+          Seu navegador não suporta vídeo.
         </video>
       </div>
 
       <!-- INFORMAÇÕES -->
-      <div class="video-info mt-4 p-4">
+      <div class="p-4 rounded"
+           style="background:#1a1c23; border:1px solid #2d2f36;">
 
         <div class="d-flex justify-content-between align-items-start">
           <div>
             <h5 class="text-warning">Descrição</h5>
-            <p class="text-muted">{{ video.descricao }}</p>
+            <p class="text-muted mb-0">{{ video.descricao }}</p>
           </div>
 
           {% if current_user == video.autor %}
-          <form action="{{ url_for('excluir_video', video_id=video.id) }}" method="POST">
+          <form action="{{ url_for('excluir_video', video_id=video.id) }}"
+                method="POST"
+                onsubmit="return confirm('Tem certeza que deseja excluir este vídeo?');">
             <button class="btn btn-outline-danger btn-sm">
               Excluir Vídeo
             </button>
@@ -38,12 +42,15 @@
           {% endif %}
         </div>
 
-        <hr>
+        <hr class="border-secondary">
 
         <!-- AUTOR -->
         <div class="d-flex align-items-center mb-3">
           <img src="{{ url_for('static', filename='fotos_perfil/' + video.autor.foto_perfil) }}"
-               class="rounded-circle me-2 avatar">
+               class="rounded-circle me-2"
+               width="45"
+               height="45"
+               style="object-fit:cover;">
           <span class="text-muted">
             Publicado por <strong class="text-warning">{{ video.autor.username }}</strong>
           </span>
@@ -51,12 +58,7 @@
 
         <!-- AÇÕES -->
         <div class="d-flex gap-3">
-          <button class="btn btn-like
-                  {% if curtir_video(video) %}
-                    btn-danger
-                  {% else %}
-                    btn-outline-danger
-                  {% endif %}"
+          <button class="btn btn-like btn-outline-danger"
                   data-video-id="{{ video.id }}">
             ❤️ Curtir
             <span id="like-count-{{ video.id }}">
@@ -74,20 +76,22 @@
         </div>
       </div>
 
-      <!-- COMENTÁRIOS (INICIA FECHADO) -->
+      <!-- COMENTÁRIOS -->
       <div id="comentarios-video-{{ video.id }}"
-           class="comentarios d-none mt-3 p-3">
+           class="comentarios-box mt-3 p-3 rounded"
+           style="background:#1a1c23; border:1px solid #2d2f36;">
 
         <!-- LISTA -->
         <div class="comentario-list mb-3">
           {% for comentario in video.comentarios %}
           <div class="comentario-item mb-2"
                data-comentario-id="{{ comentario.id }}">
-            <strong>{{ comentario.usuario.username }}</strong>
-            <div class="text small">{{ comentario.texto }}</div>
+            <strong class="text-warning">{{ comentario.autor.username }}</strong>
+            <div class="text small text-light">{{ comentario.texto }}</div>
 
-            {% if comentario.usuario == current_user %}
-            <button class="btn btn-sm btn-outline-danger btn-apagar-comentario mt-1">
+            {% if comentario.autor == current_user %}
+            <button class="btn btn-sm btn-outline-danger btn-apagar-comentario mt-1"
+                    data-comentario-id="{{ comentario.id }}">
               Apagar
             </button>
             {% endif %}
@@ -98,7 +102,8 @@
         <!-- FORM -->
         {% if current_user.is_authenticated %}
         <form class="comentario-form d-flex gap-2"
-              data-video-id="{{ video.id }}">
+              data-tipo="video"
+              data-id="{{ video.id }}">
           <input type="text"
                  name="texto"
                  class="form-control"

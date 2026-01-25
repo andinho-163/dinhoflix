@@ -206,6 +206,14 @@ def exibir_video(video_id):
     return render_template('video.html', video=video)
 
 
+from flask import send_from_directory
+
+@app.route('/media/videos/<filename>')
+def media_video(filename):
+    caminho = os.path.join(app.root_path, 'static/videos')
+    return send_from_directory(caminho, filename)
+
+
 @app.route('/curtir/video/<int:video_id>', methods=['POST'])
 @login_required
 def curtir_video(video_id):
@@ -227,6 +235,19 @@ def curtir_video(video_id):
 
     total = Like.query.filter_by(video_id=video_id).count()
     return jsonify(liked=liked, total_likes=total)
+
+@app.route('/video/excluir/<int:video_id>', methods=['POST'])
+@login_required
+def excluir_video(video_id):
+    video = Video.query.get_or_404(video_id)
+
+    if video.autor != current_user:
+        abort(403)
+
+    database.session.delete(video)
+    database.session.commit()
+    flash('Vídeo excluído', 'success')
+    return redirect(url_for('home'))
 
 
 # ==========================================
