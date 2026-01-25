@@ -15,7 +15,7 @@ app = Flask(
     instance_relative_config=True
 )
 
-app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 1GB
 
 # Garante que a pasta instance exista
 os.makedirs(app.instance_path, exist_ok=True)

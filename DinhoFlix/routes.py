@@ -272,6 +272,18 @@ def criar_post():
 
     return render_template('criarpost.html', form=form)
 
+@app.route('/post/excluir/<int:post_id>', methods=['POST'])
+@login_required
+def excluir_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    if post.autor != current_user:
+        abort(403)
+
+    database.session.delete(post)
+    database.session.commit()
+    flash('Post excluído', 'success')
+    return redirect(url_for('home'))
 
 @app.route('/depoimento/novo', methods=['GET', 'POST'])
 @login_required
@@ -291,6 +303,18 @@ def criar_depoimento():
 
     return render_template('criar_depoimento.html', form=form)
 
+@app.route('/depoimento/excluir/<int:depoimento_id>', methods=['POST'])
+@login_required
+def excluir_depoimento(depoimento_id):
+    depoimento = Depoimento.query.get_or_404(depoimento_id)
+
+    if depoimento.autor != current_user:
+        abort(403)
+
+    database.session.delete(depoimento)
+    database.session.commit()
+    flash('Relato excluído', 'success')
+    return redirect(url_for('home'))
 
 # ==========================================
 # COMENTÁRIOS

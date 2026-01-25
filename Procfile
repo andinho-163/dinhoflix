@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath . main:app --timeout 1000
+web: gunicorn --pythonpath . main:app --timeout 600
