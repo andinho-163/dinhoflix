@@ -193,7 +193,6 @@
             {{ depoimento.likes|length }}
           </span>
 
-
           <button class="btn btn-sm btn-outline-secondary btn-comment"
                   data-tipo="depoimento"
                   data-id="{{ depoimento.id }}">💬</button>
@@ -202,7 +201,11 @@
             {{ depoimento.comentarios|length }}
           </span>
         </div>
-
+            {% if current_user == depoimento.autor %}
+            <form action="{{ url_for('excluir_depoimento', depoimento_id=depoimento.id) }}" method="POST" class="mt-2">
+              <button class="btn btn-sm btn-outline-danger">Excluir</button>
+            </form>
+            {% endif %}
         <div class="comentarios-box mt-3" id="comentarios-depoimento-{{ depoimento.id }}">
           {% for comentario in depoimento.comentarios %}
             <div class="comentario-item mb-2" data-comentario-id="{{ comentario.id }}">
@@ -210,11 +213,7 @@
               <div class="small">{{ comentario.texto }}</div>
             </div>
           {% endfor %}
-            {% if current_user == depoimento.autor %}
-            <form action="{{ url_for('excluir_depoimento', depoimento_id=depoimento.id) }}" method="POST" class="mt-2">
-              <button class="btn btn-sm btn-outline-danger">Excluir</button>
-            </form>
-            {% endif %}
+
           {% if current_user.is_authenticated %}
             <form class="comentario-form mt-2"
                   data-tipo="depoimento"
