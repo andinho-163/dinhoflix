@@ -7,3 +7,4 @@ email-validator
 Pillow
 gunicorn
 psycopg2-binary
+opencv-python-headless
