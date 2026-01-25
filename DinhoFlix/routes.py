@@ -3,7 +3,6 @@
 # ==========================================
 
 import os
-import cv2
 import secrets
 from PIL import Image
 
@@ -399,6 +398,8 @@ def salvar_thumbnail(imagem):
 
 
 def gerar_thumbnail_automatica(nome_video):
+    import cv2  # IMPORTAÇÃO LOCAL (SAFE PARA PRODUÇÃO)
+
     caminho_video = os.path.join(app.root_path, 'static/videos', nome_video)
     nome_thumb = nome_video.rsplit('.', 1)[0] + '.jpg'
     caminho_thumb = os.path.join(app.root_path, 'static/thumbnails', nome_thumb)
@@ -412,3 +413,4 @@ def gerar_thumbnail_automatica(nome_video):
 
     cap.release()
     return nome_thumb
+
