@@ -410,11 +410,16 @@ def salvar_thumbnail(imagem):
 
 
 def gerar_thumbnail_automatica(nome_video):
-    import cv2  # IMPORTAÇÃO LOCAL (SAFE PARA PRODUÇÃO)
+    import cv2  # 👈 IMPORT LOCAL (CRÍTICO)
 
-    caminho_video = os.path.join(app.root_path, 'static/videos', nome_video)
+    pasta_videos = os.path.join(app.root_path, 'static/videos')
+    pasta_thumbs = os.path.join(app.root_path, 'static/thumbnails')
+
+    os.makedirs(pasta_thumbs, exist_ok=True)
+
+    caminho_video = os.path.join(pasta_videos, nome_video)
     nome_thumb = nome_video.rsplit('.', 1)[0] + '.jpg'
-    caminho_thumb = os.path.join(app.root_path, 'static/thumbnails', nome_thumb)
+    caminho_thumb = os.path.join(pasta_thumbs, nome_thumb)
 
     cap = cv2.VideoCapture(caminho_video)
     cap.set(cv2.CAP_PROP_POS_MSEC, 2000)
@@ -425,4 +430,5 @@ def gerar_thumbnail_automatica(nome_video):
 
     cap.release()
     return nome_thumb
+
 
