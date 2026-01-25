@@ -4,7 +4,11 @@
 
 import os
 import secrets
+import subprocess
+
 from PIL import Image
+
+import imageio_ffmpeg as ffmpeg
 
 from flask import (
     render_template,
@@ -15,6 +19,7 @@ from flask import (
     abort,
     jsonify
 )
+
 from flask_login import (
     login_user,
     logout_user,
@@ -41,12 +46,11 @@ from DinhoFlix.models import (
 )
 
 # ==========================================
-# 1. FEED E NAVEGAÇÃO
+# FEED / NAVEGAÇÃO
 # ==========================================
 
 @app.route('/')
 def home():
-    """Feed principal unificado."""
     return render_template(
         'home.html',
         videos=Video.query.order_by(Video.id.desc()).all(),
@@ -55,14 +59,8 @@ def home():
     )
 
 
-@app.route('/contatos')
-def contatos():
-    return render_template('contatos.html')
-
-
 @app.route('/explorar/<tipo>')
 def explorar(tipo):
-    """Filtro do feed por tipo."""
     if tipo == 'videos':
         return render_template(
             'home.html',
@@ -91,7 +89,7 @@ def explorar(tipo):
 
 
 # ==========================================
-# 2. AUTENTICAÇÃO
+# AUTENTICAÇÃO
 # ==========================================
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -105,12 +103,10 @@ def login():
             login_user(usuario, remember=form_login.lembrar_dados.data)
             flash('Bem-vindo!', 'success')
             return redirect(url_for('home'))
-        flash('Credenciais inválidas.', 'danger')
+        flash('Credenciais inválidas', 'danger')
 
     if form_criar.validate_on_submit() and 'botao_submit_criarconta' in request.form:
-        senha_hash = bcrypt.generate_password_hash(
-            form_criar.senha.data
-        ).decode()
+        senha_hash = bcrypt.generate_password_hash(form_criar.senha.data).decode()
 
         usuario = Usuario(
             username=form_criar.username.data,
@@ -119,6 +115,7 @@ def login():
         )
         database.session.add(usuario)
         database.session.commit()
+
         flash('Conta criada com sucesso!', 'success')
         return redirect(url_for('login'))
 
@@ -137,7 +134,7 @@ def sair():
 
 
 # ==========================================
-# 3. PERFIL
+# PERFIL
 # ==========================================
 
 @app.route('/perfil')
@@ -169,7 +166,7 @@ def editar_perfil():
 
 
 # ==========================================
-# 4. VÍDEOS
+# VÍDEOS
 # ==========================================
 
 @app.route('/video/upload', methods=['GET', 'POST'])
@@ -183,7 +180,7 @@ def upload_video():
         if form.thumbnail.data:
             thumb = salvar_thumbnail(form.thumbnail.data)
         else:
-            thumb = 'default.jpg'
+            thumb = gerar_thumbnail_automatica(nome_video)
 
         video = Video(
             titulo=form.titulo.data,
@@ -195,6 +192,7 @@ def upload_video():
 
         database.session.add(video)
         database.session.commit()
+
         flash('Vídeo publicado!', 'success')
         return redirect(url_for('home'))
 
@@ -228,12 +226,11 @@ def curtir_video(video_id):
     database.session.commit()
 
     total = Like.query.filter_by(video_id=video_id).count()
-
     return jsonify(liked=liked, total_likes=total)
 
 
 # ==========================================
-# 5. POSTS E RELATOS
+# POSTS / RELATOS
 # ==========================================
 
 @app.route('/post/criar', methods=['GET', 'POST'])
@@ -275,75 +272,27 @@ def criar_depoimento():
 
 
 # ==========================================
-# 6. CURTIDAS (POST / DEPOIMENTO)
+# COMENTÁRIOS
 # ==========================================
 
-@app.route('/curtir/<tipo>/<int:conteudo_id>', methods=['POST'])
+@app.route('/comentario/<tipo>/<int:conteudo_id>', methods=['POST'])
 @login_required
-def curtir_generico(tipo, conteudo_id):
-    filtro = dict(usuario_id=current_user.id)
-
-    if tipo == 'post':
-        filtro['post_id'] = conteudo_id
-    elif tipo == 'depoimento':
-        filtro['depoimento_id'] = conteudo_id
-    else:
-        abort(400)
-
-    like = Like.query.filter_by(**filtro).first()
-
-    if like:
-        database.session.delete(like)
-        liked = False
-    else:
-        database.session.add(Like(**filtro))
-        liked = True
-
-    database.session.commit()
-
-    total = Like.query.filter_by(**{k: v for k, v in filtro.items() if k != 'usuario_id'}).count()
-
-    return jsonify(liked=liked, total_likes=total)
-
-
-# ==========================================
-# 7. COMENTÁRIOS (GENÉRICO)
-# ==========================================
-
-@app.route('/comentario/<tipo>/<int:id>', methods=['POST'])
-@login_required
-def comentar(tipo, id):
+def comentar(tipo, conteudo_id):
     texto = request.form.get('texto')
 
     if not texto:
-        return jsonify({'error': 'Comentário vazio'}), 400
+        return jsonify({'erro': 'Comentário vazio'}), 400
+
+    comentario = Comentario(texto=texto, autor=current_user)
 
     if tipo == 'video':
-        video = Video.query.get_or_404(id)
-        comentario = Comentario(
-            texto=texto,
-            autor=current_user,
-            video=video
-        )
-
+        comentario.video_id = conteudo_id
     elif tipo == 'post':
-        post = Post.query.get_or_404(id)
-        comentario = Comentario(
-            texto=texto,
-            autor=current_user,
-            post=post
-        )
-
+        comentario.post_id = conteudo_id
     elif tipo == 'depoimento':
-        depoimento = Depoimento.query.get_or_404(id)
-        comentario = Comentario(
-            texto=texto,
-            autor=current_user,
-            depoimento=depoimento
-        )
-
+        comentario.depoimento_id = conteudo_id
     else:
-        return jsonify({'error': 'Tipo inválido'}), 400
+        abort(400)
 
     database.session.add(comentario)
     database.session.commit()
@@ -355,30 +304,13 @@ def comentar(tipo, id):
     })
 
 
-
-@app.route('/comentario/apagar/<int:comentario_id>', methods=['POST'])
-@login_required
-def apagar_comentario(comentario_id):
-    comentario = Comentario.query.get_or_404(comentario_id)
-
-    if comentario.usuario_id != current_user.id:
-        abort(403)
-
-    database.session.delete(comentario)
-    database.session.commit()
-    return jsonify(sucesso=True)
-
-
 # ==========================================
-# 8. FUNÇÕES AUXILIARES
+# FUNÇÕES AUXILIARES
 # ==========================================
 
 def salvar_imagem(imagem):
-    pasta = os.path.join(app.root_path, 'static/fotos_perfil')
-    os.makedirs(pasta, exist_ok=True)
-
     nome = secrets.token_hex(8) + os.path.splitext(imagem.filename)[1]
-    caminho = os.path.join(pasta, nome)
+    caminho = os.path.join(app.root_path, 'static/fotos_perfil', nome)
 
     img = Image.open(imagem)
     img.thumbnail((400, 400))
@@ -387,48 +319,36 @@ def salvar_imagem(imagem):
     return nome
 
 
-
 def salvar_video(arquivo):
-    pasta = os.path.join(app.root_path, 'static/videos')
-    os.makedirs(pasta, exist_ok=True)
-
     nome = secrets.token_hex(8) + os.path.splitext(arquivo.filename)[1]
-    arquivo.save(os.path.join(pasta, nome))
+    caminho = os.path.join(app.root_path, 'static/videos', nome)
+    arquivo.save(caminho)
     return nome
 
 
-
 def salvar_thumbnail(imagem):
-    pasta = os.path.join(app.root_path, 'static/thumbnails')
-    os.makedirs(pasta, exist_ok=True)
-
     nome = secrets.token_hex(8) + os.path.splitext(imagem.filename)[1]
-    caminho = os.path.join(pasta, nome)
+    caminho = os.path.join(app.root_path, 'static/thumbnails', nome)
     Image.open(imagem).save(caminho)
     return nome
 
 
-
 def gerar_thumbnail_automatica(nome_video):
-    import cv2  # 👈 IMPORT LOCAL (CRÍTICO)
-
-    pasta_videos = os.path.join(app.root_path, 'static/videos')
-    pasta_thumbs = os.path.join(app.root_path, 'static/thumbnails')
-
-    os.makedirs(pasta_thumbs, exist_ok=True)
-
-    caminho_video = os.path.join(pasta_videos, nome_video)
+    caminho_video = os.path.join(app.root_path, 'static/videos', nome_video)
     nome_thumb = nome_video.rsplit('.', 1)[0] + '.jpg'
-    caminho_thumb = os.path.join(pasta_thumbs, nome_thumb)
+    caminho_thumb = os.path.join(app.root_path, 'static/thumbnails', nome_thumb)
 
-    cap = cv2.VideoCapture(caminho_video)
-    cap.set(cv2.CAP_PROP_POS_MSEC, 2000)
-    sucesso, frame = cap.read()
+    ffmpeg_path = ffmpeg.get_ffmpeg_exe()
 
-    if sucesso:
-        cv2.imwrite(caminho_thumb, frame)
+    comando = [
+        ffmpeg_path,
+        "-y",
+        "-i", caminho_video,
+        "-ss", "00:00:02",
+        "-vframes", "1",
+        caminho_thumb
+    ]
 
-    cap.release()
+    subprocess.run(comando, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
     return nome_thumb
-
-
