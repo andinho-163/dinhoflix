@@ -365,7 +365,7 @@ def gerar_thumbnail_automatica(nome_video):
         ffmpeg_path,
         "-y",
         "-i", caminho_video,
-        "-ss", "00:00:02",
+        "-ss", "00:00:01",
         "-vframes", "1",
         caminho_thumb
     ]
