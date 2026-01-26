@@ -3,6 +3,8 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
+
 import os
 import sqlalchemy
 
@@ -14,6 +16,8 @@ app = Flask(
     static_folder='static',
     instance_relative_config=True
 )
+
+csrf = CSRFProtect(app)
 
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 1GB
 
