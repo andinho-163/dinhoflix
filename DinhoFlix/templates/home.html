@@ -151,14 +151,6 @@
               <div class="small">{{ comentario.texto }}</div>
             </div>
           {% endfor %}
-
-          {% if current_user.is_authenticated %}
-            <form class="comentario-form mt-2"
-                  data-tipo="post"
-                  data-id="{{ post.id }}">
-              <input name="texto" class="form-control form-control-sm" required>
-            </form>
-          {% endif %}
         </div>
       </div>
       {% endfor %}
@@ -208,14 +200,6 @@
               <div class="small">{{ comentario.texto }}</div>
             </div>
           {% endfor %}
-
-          {% if current_user.is_authenticated %}
-            <form class="comentario-form mt-2"
-                  data-tipo="depoimento"
-                  data-id="{{ depoimento.id }}">
-              <input name="texto" class="form-control form-control-sm" required>
-            </form>
-          {% endif %}
         </div>
 
       </div>

@@ -6,10 +6,8 @@ import os
 import secrets
 import subprocess
 
-from PIL import Image
-
 import imageio_ffmpeg as ffmpeg
-
+from PIL import Image
 from flask import (
     render_template,
     redirect,
@@ -19,7 +17,6 @@ from flask import (
     abort,
     jsonify
 )
-
 from flask_login import (
     login_user,
     logout_user,
@@ -41,9 +38,9 @@ from DinhoFlix.models import (
     Video,
     Post,
     Depoimento,
-    Like,
     Comentario
 )
+
 
 # ==========================================
 # FEED / NAVEGAÇÃO
@@ -214,27 +211,31 @@ def media_video(filename):
     return send_from_directory(caminho, filename)
 
 
-@app.route('/curtir/video/<int:video_id>', methods=['POST'])
+@app.route('/curtir/<tipo>/<int:id>', methods=['POST'])
 @login_required
-def curtir_video(video_id):
-    like = Like.query.filter_by(
-        usuario_id=current_user.id,
-        video_id=video_id
-    ).first()
+def curtir(tipo, id):
 
-    if like:
-        database.session.delete(like)
+    if tipo == 'video':
+        objeto = Video.query.get_or_404(id)
+    elif tipo == 'post':
+        objeto = Post.query.get_or_404(id)
+    elif tipo == 'depoimento':
+        objeto = Depoimento.query.get_or_404(id)
+
+    if current_user in objeto.likes:
+        objeto.likes.remove(current_user)
         liked = False
     else:
-        database.session.add(
-            Like(usuario_id=current_user.id, video_id=video_id)
-        )
+        objeto.likes.append(current_user)
         liked = True
 
     database.session.commit()
 
-    total = Like.query.filter_by(video_id=video_id).count()
-    return jsonify(liked=liked, total_likes=total)
+    return jsonify({
+        'liked': liked,
+        'total_likes': len(objeto.likes)
+    })
+
 
 @app.route('/video/excluir/<int:video_id>', methods=['POST'])
 @login_required
