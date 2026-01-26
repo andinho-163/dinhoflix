@@ -58,7 +58,10 @@
           <p class="text-secondary small">{{ video.descricao[:150] }}...</p>
 
           <!-- AÇÕES -->
-            {% include 'components/acoes_feed.html' with objeto=video tipo='video' %}
+            {% set objeto = video %}
+            {% set tipo = 'video' %}
+            {% include 'components/acoes_feed.html' %}
+
 
           <!-- COMENTÁRIOS -->
           <div class="comentarios-box mt-3" id="comentarios-video-{{ video.id }}">
@@ -108,7 +111,10 @@
         <h4 style="color:goldenrod;">{{ post.titulo }}</h4>
         <p class="text-light opacity-75">{{ post.corpo }}</p>
 
-            {% include 'components/acoes_feed.html' with objeto=post tipo='post' %}
+            {% set objeto = post %}
+            {% set tipo = 'post' %}
+            {% include 'components/acoes_feed.html' %}
+
 
             {% if current_user == post.autor %}
             <form action="{{ url_for('excluir_post', post_id=post.id) }}" method="POST" class="mt-2">
@@ -150,7 +156,10 @@
           — @{{ depoimento.autor.username }}
         </small>
 
-            {% include 'components/acoes_feed.html' with objeto=depoimento tipo='depoimento' %}
+            {% set objeto = depoimento %}
+            {% set tipo = 'depoimento' %}
+            {% include 'components/acoes_feed.html' %}
+
 
             {% if current_user == depoimento.autor %}
             <form action="{{ url_for('excluir_depoimento', depoimento_id=depoimento.id) }}" method="POST" class="mt-2">
