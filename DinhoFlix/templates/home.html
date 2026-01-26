@@ -58,24 +58,7 @@
           <p class="text-secondary small">{{ video.descricao[:150] }}...</p>
 
           <!-- AÇÕES -->
-          <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-sm btn-like btn-outline-danger"
-                    data-tipo="video"
-                    data-id="{{ video.id }}">❤️</button>
-
-            <span id="like-count-video-{{ video.id }}"
-                  class="fw-bold text-danger">
-              {{ video.likes|length }}
-            </span>
-
-            <button class="btn btn-sm btn-outline-secondary btn-comment"
-                    data-tipo="video"
-                    data-id="{{ video.id }}">💬</button>
-
-            <span class="text-secondary fw-bold">
-              {{ video.comentarios|length }}
-            </span>
-          </div>
+            {% include 'components/acoes_feed.html' with objeto=video tipo='video' %}
 
           <!-- COMENTÁRIOS -->
           <div class="comentarios-box mt-3" id="comentarios-video-{{ video.id }}">
@@ -125,24 +108,8 @@
         <h4 style="color:goldenrod;">{{ post.titulo }}</h4>
         <p class="text-light opacity-75">{{ post.corpo }}</p>
 
-        <div class="d-flex align-items-center gap-3 mt-3">
-          <button class="btn btn-sm btn-like btn-outline-danger"
-                  data-tipo="post"
-                  data-id="{{ post.id }}">❤️</button>
+            {% include 'components/acoes_feed.html' with objeto=post tipo='post' %}
 
-          <span id="like-count-post-{{ post.id }}"
-                class="fw-bold text-danger">
-            {{ post.likes|length }}
-          </span>
-
-          <button class="btn btn-sm btn-outline-secondary btn-comment"
-                  data-tipo="post"
-                  data-id="{{ post.id }}">💬</button>
-
-          <span class="text-secondary fw-bold">
-            {{ post.comentarios|length }}
-          </span>
-        </div>
             {% if current_user == post.autor %}
             <form action="{{ url_for('excluir_post', post_id=post.id) }}" method="POST" class="mt-2">
               <button class="btn btn-sm btn-outline-danger">Excluir</button>
@@ -183,24 +150,8 @@
           — @{{ depoimento.autor.username }}
         </small>
 
-        <div class="d-flex align-items-center gap-3 mt-3">
-          <button class="btn btn-sm btn-like btn-outline-danger"
-                  data-tipo="depoimento"
-                  data-id="{{ depoimento.id }}">❤️</button>
+            {% include 'components/acoes_feed.html' with objeto=depoimento tipo='depoimento' %}
 
-          <span id="like-count-depoimento-{{ depoimento.id }}"
-                class="fw-bold text-danger">
-            {{ depoimento.likes|length }}
-          </span>
-
-          <button class="btn btn-sm btn-outline-secondary btn-comment"
-                  data-tipo="depoimento"
-                  data-id="{{ depoimento.id }}">💬</button>
-
-          <span class="text-secondary fw-bold">
-            {{ depoimento.comentarios|length }}
-          </span>
-        </div>
             {% if current_user == depoimento.autor %}
             <form action="{{ url_for('excluir_depoimento', depoimento_id=depoimento.id) }}" method="POST" class="mt-2">
               <button class="btn btn-sm btn-outline-danger">Excluir</button>

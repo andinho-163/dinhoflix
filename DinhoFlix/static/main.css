@@ -192,3 +192,13 @@ body {
   border-bottom: 1px solid #2d2f36;
   padding-bottom: 6px;
 }
+
+.feed-acoes button {
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.feed-acoes span {
+  min-width: 20px;
+  text-align: center;
+}
