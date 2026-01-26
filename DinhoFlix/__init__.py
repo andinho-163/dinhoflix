@@ -70,6 +70,6 @@ else:
 # IMPORTAÇÃO DAS ROTAS
 # ===============================
 
-from DinhoFlix.routes import curtir_video
-app.jinja_env.globals.update(curtir_video=curtir_video)
+from DinhoFlix.routes import curtir
+app.jinja_env.globals.update(curtir=curtir)
 from DinhoFlix import routes
