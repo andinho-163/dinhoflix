@@ -1,6 +1,5 @@
 *.mp4
 __pycache__/
 instance/
-teste
-. teste 
+testes.py
 .venv/
